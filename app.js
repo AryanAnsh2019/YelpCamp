@@ -24,7 +24,7 @@ const reviewRoutes = require('./routes/reviews')
 const MongoDBStore = require("connect-mongo")(session);
 //mongodb://localhost:27017/yelp-camp
 const dbUrl = process.env.DB_URL || 'mongodb://localhost:27017/yelp-camp';
-mongoose.connect('mongodb://localhost:27017/yelp-camp', {
+mongoose.connect(dbUrl, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true,
@@ -48,7 +48,7 @@ app.use(methodOverride('_method'))
 app.use(mongoSanitize())
 
 
-const secret=process.env.SECRET||'thisshouldbeabettersecret'
+const secret = process.env.SECRET || 'thisshouldbeabettersecret'
 const store = new MongoDBStore({
     url: dbUrl,
     secret: secret,
@@ -62,7 +62,7 @@ store.on('error', function (e) {
 const sessionConfig = {
     store,
     name: 'session',
-    secret:secret,
+    secret: secret,
     resave: false,
     saveUninitialized: true,
     cookie: {
@@ -155,7 +155,7 @@ app.use((err, req, res, next) => {
     if (!err.statusCode) err.statusCode = 500;
     res.status(statusCode).render('error', { err });
 })
-
-app.listen(3000, () => {
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
     console.log('On port3000')
 })
