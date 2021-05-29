@@ -1,0 +1,35 @@
+<%layout('layouts/boilerplate')%>
+
+
+    <section class="page_404">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12 ">
+                    <div class="col-sm-12 text-center">
+                        <div class="four_zero_four_bg">
+                            <h1>
+                                <%= err.statusCode %>
+                            </h1>
+                        </div>
+
+                        <div class="contant_box_404">
+                            <h3 class="h2">
+                                <%= err.message %>
+                            </h3>
+
+                            <p>Our prehistoric developer may have caused an error</p>
+
+                            <a href="/campgrounds" class="link_404">Go to Home</a>
+                        </div>
+                        <% if(process.env.NODE_ENV !=='production' ){%>
+                            <div class="my-5">
+                                <small>
+                                    <%= err.stack %>
+                                </small>
+                            </div>
+                            <% }%>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
