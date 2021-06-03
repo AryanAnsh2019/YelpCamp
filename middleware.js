@@ -1,7 +1,7 @@
 const { campgroundSchema, reviewSchema } = require('./schema');
 const ExpressError = require('./utils/ExpressError');
 const Campground = require('./models/campground')
-const Review=require('./models/reviews')
+const Review = require('./models/reviews')
 
 module.exports.isLoggedIn = (req, res, next) => {
     if (!req.isAuthenticated()) {
@@ -45,12 +45,54 @@ module.exports.isReviewAuthor = async (req, res, next) => {
 
 module.exports.validateReview = (req, res, next) => {
     const { error } = reviewSchema.validate(req.body);
-    console.log(error);
+    console.log(req.body);
     if (error) {
         const msg = error.details.map(el => { el.message }).join(',')
         throw new ExpressError(error.details[0].message, 400);
     }
     else {
+        next();
+    }
+}
+
+module.exports.paginateResults = model => {
+    return async (req, res, next) => {
+        const allCampgrounds = await Campground.find({});
+
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 20;
+
+        const startIndex = (page - 1) * limit;
+        const endIndex = page * limit;
+
+        const campgrounds = {};
+
+        campgrounds.campgrounds = allCampgrounds.slice(startIndex, endIndex);
+        if (endIndex < allCampgrounds.length) {
+            campgrounds.next = {
+                page: page + 1,
+                limit: limit
+            }
+        } else {
+            campgrounds.next = {
+                page: null,
+                limit: limit
+            }
+        }
+        if (startIndex > 1) {
+            campgrounds.previous = {
+                page: page - 1,
+                limit: limit
+            }
+        } else {
+            campgrounds.previous = {
+                page: null,
+                limit: limit
+            }
+        }
+        campgrounds.pages = ~~(allCampgrounds.length/limit) ;
+
+        res.paginatedResults = campgrounds;
         next();
     }
 }

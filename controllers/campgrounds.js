@@ -6,8 +6,9 @@ const geocoder = mbxGeocoding({ accessToken: mapBoxToken })
 
 
 module.exports.index = async (req, res) => {
-    const campgrounds = await Campground.find({});
-    res.render('campgrounds/index', { campgrounds })
+    const campgrounds=res.paginatedResults;
+    const allCampgrounds=await Campground.find({});
+    res.render('campgrounds/index', { campgrounds, allCampgrounds })
 }
 
 module.exports.newForm = (req, res) => {
@@ -20,15 +21,14 @@ module.exports.createCampground = async (req, res, next) => {
         limit: 1
     }).send()
     const campground = new Campground(req.body.campground);
-    if(!geoData){
+    if (!geoData) {
         req.flash('error', 'Location not found! Setting default location New York!!');
-        campground.geometry = { type: 'Point', coordinates: [ -73.9826608125, 40.76872225 ] };
+        campground.geometry = { type: 'Point', coordinates: [-73.9826608125, 40.76872225] };
     }
     campground.geometry = geoData.body.features[0].geometry;
     campground.images = req.files.map(f => ({ url: f.path, filename: f.filename }));
     campground.author = req.user._id;
-   
-    console.log(campground.geometry)
+
     await campground.save();
     req.flash('success', 'Successfully made a new campground!');
     res.redirect(`/campgrounds/${campground._id}`)

@@ -78,11 +78,10 @@ app.use(flash());
 app.use(helmet());
 
 const scriptSrcUrls = [
-    // "https://stackpath.bootstrapcdn.com",
     "https://api.tiles.mapbox.com",
     "https://api.mapbox.com",
-    "https://cdnjs.cloudflare.com",
     "https://cdn.jsdelivr.net",
+    "https://unpkg.com"
 ];
 const styleSrcUrls = [
     "https://stackpath.bootstrapcdn.com",

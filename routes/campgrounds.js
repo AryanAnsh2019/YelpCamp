@@ -6,13 +6,13 @@ const { campgroundSchema } = require('../schema.js');
 const multer = require('multer')
 const { storage } = require('../cloudinary');
 const upload = multer({ storage })
-const { isLoggedIn, isAuthor, validateCampground } = require('../middleware')
+const { isLoggedIn, isAuthor, validateCampground, paginateResults } = require('../middleware')
 
 const ExpressError = require('../utils/ExpressError');
 const Campground = require('../models/campground');
 
 router.route('/')
-    .get(catchAsync(campgrounds.index))
+    .get(paginateResults(Campground),catchAsync(campgrounds.index))
     .post(isLoggedIn, upload.array('image'), validateCampground, catchAsync(campgrounds.createCampground))
 
 router.get('/new', isLoggedIn, campgrounds.newForm)
