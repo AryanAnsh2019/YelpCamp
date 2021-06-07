@@ -5,10 +5,18 @@ const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
 const geocoder = mbxGeocoding({ accessToken: mapBoxToken })
 
 
+function escapeRegex(text) {
+    return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+};
+
 module.exports.index = async (req, res) => {
-    const campgrounds=res.paginatedResults;
-    const allCampgrounds=await Campground.find({});
-    res.render('campgrounds/index', { campgrounds, allCampgrounds })
+    const campgrounds = res.paginatedResults;
+    const allCampgrounds = await Campground.find({});
+    if (campgrounds.campgrounds.length === 0) {
+        req.flash('error', 'No more campgrounds to view')
+        res.redirect('/campgrounds')
+    }
+    res.render('campgrounds/index', { ...campgrounds, allCampgrounds })
 }
 
 module.exports.newForm = (req, res) => {

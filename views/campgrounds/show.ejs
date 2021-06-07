@@ -2,7 +2,6 @@
   <link rel="stylesheet" href="/css/stars.css">
 
 
-
   <div class="row">
     <div class="col-6">
 
@@ -12,7 +11,7 @@
           <div class="carousel-inner">
             <%campground.images.forEach((img, i)=>{ %>
               <div class="carousel-item <%= i===0?'active':'' %>">
-                <img src="<%= img.url %> " class="d-block w-100 img-card-top" alt="">
+                <img src="<%= img.url %> " class="d-block w-100 img-card-top" alt="" onerror="this.src=''https://images.unsplash.com/photo-1521255450884-b3e8e92cd615?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'">
               </div>
               <% }) %>
           </div>
@@ -29,6 +28,7 @@
             </button>
             <% } %>
         </div>
+        
         <div class="card-body">
           <h5 class="card-title">
             <%=campground.title%>
@@ -42,9 +42,9 @@
             <%= campground.location %>
           </li>
           <li class="list-group-item ">
-            <h6 class="text-muted card-subtitle">Submitted by <b class="text-primary">
+            <h6 class="text-muted card-subtitle">Submitted by <a class="text-primary" href="/users/<%= campground.author.id %>">
                 <%= campground.author.username %>
-              </b></h6>
+            </a></h6>
           </li>
           <li class="list-group-item">$<%= campground.price %>/night </li>
         </ul>

@@ -1,0 +1,40 @@
+<%layout('layouts/boilerplate')%>
+
+
+<div class="row justify-content-center mb-5">
+<% for(let user of users) { %>
+    <div class="card col-3 col-sm-3 mx-2 px-0">
+        <img src="<%= user.avatar.url %>" alt="User avatar" class="img-card-top img-fluid">
+        <div class="card-body d-flex flex-column justify-content-center align-items-center">
+            <h5 class="card-title"><%= user.firstName + " " + user.lastName%></h5>
+            <h6 class="card-subtitle text-muted">@<%= user.username%></h6>
+            <p class="text-center mt-4"><%= user.bio.slice(0, user.bio.indexOf('.')) %> ...</p>
+            <% if (user.currentlyActive) { %>
+                <p class="text-muted text-center">Currently Online</p>
+            <% } else { %>
+                <p class="text-muted text-center">
+                    Last active on
+                    <%= String(new Date(user.lastActive).getDate())+'/'+String(new Date(user.lastActive).getMonth()+1)+'/'+String(new Date(user.lastActive).getFullYear()) %> 
+                </p>
+            <% } %> 
+        </div>
+        <div class="card-footer d-flex justify-content-center align-items-center">
+           
+             
+            
+            <a href="/users/<%= user._id %>" class="text-dark"><i class="fas fa-eye"></i></a>
+            <% if (currentUser && user._id.equals(currentUser._id)) { %>
+                <form action="/users/<%=user._id%>?_method=DELETE" method="POST">
+                    <button class="text-danger ms-3 btn-link border-0 bg-light"><i class="fas fa-trash-alt"></i></button> 
+                </form>
+
+            <% } %>
+        </div>
+
+    </div>
+
+<% } %> 
+
+</div>
+
+<script src="https://kit.fontawesome.com/be8cb6d164.js" crossorigin="anonymous"></script>

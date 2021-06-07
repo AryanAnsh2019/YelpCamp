@@ -1,7 +1,8 @@
 const { campgroundSchema, reviewSchema } = require('./schema');
 const ExpressError = require('./utils/ExpressError');
 const Campground = require('./models/campground')
-const Review = require('./models/reviews')
+const Review = require('./models/reviews');
+const User = require('./models/user');
 
 module.exports.isLoggedIn = (req, res, next) => {
     if (!req.isAuthenticated()) {
@@ -45,7 +46,6 @@ module.exports.isReviewAuthor = async (req, res, next) => {
 
 module.exports.validateReview = (req, res, next) => {
     const { error } = reviewSchema.validate(req.body);
-    console.log(req.body);
     if (error) {
         const msg = error.details.map(el => { el.message }).join(',')
         throw new ExpressError(error.details[0].message, 400);
@@ -55,12 +55,22 @@ module.exports.validateReview = (req, res, next) => {
     }
 }
 
+module.exports.isProfileAuthor = async (req,res,next) =>{
+    const { id } = req.params;
+    const user = await User.findById(id);
+    if (!user._id.equals(req.user._id)) {
+        req.flash('error', 'You do not have permission to delete this profile!')
+        return res.redirect(`/users`)
+    }
+    next();
+}
+
 module.exports.paginateResults = model => {
     return async (req, res, next) => {
         const allCampgrounds = await Campground.find({});
 
         const page = parseInt(req.query.page) || 1;
-        const limit = parseInt(req.query.limit) || 20;
+        const limit = 20;
 
         const startIndex = (page - 1) * limit;
         const endIndex = page * limit;

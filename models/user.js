@@ -8,6 +8,23 @@ const UserSchema = new Schema({
         type: String,
         required: true,
         unique: true
+    },
+    resetPasswordToken: String,
+    resetPasswordExpires: Date,
+    firstName: String,
+    lastName: String,
+    avatar: {
+        url: String,
+        filename: String
+    },
+    bio: String,
+    lastActive: {
+        type: Date,
+        default:Date.now()
+    },
+    currentlyActive: {
+        type:Boolean,
+        default:false
     }
 })
 

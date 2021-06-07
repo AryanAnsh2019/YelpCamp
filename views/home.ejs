@@ -13,9 +13,11 @@
 <body class="d-flex text-center text-white bg-dark">
     <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
         <header class="mb-auto">
-            <div>
-                <h3 class="float-md-left mb-0">YelpCamp</h3>
-                <nav class="nav nav-masthead justify-content-center float-md-right">
+            <div class="d-flex align-items-center justify-content-between">
+                <h3 class="float-md-left mb-0">
+                    <img src="/imgs/logo.png" alt="" class="img-fluid" style="height:80px">
+                </h3>
+                <nav class="nav nav-masthead justify-content-center">
                     <a class="nav-link active" aria-current="page" href="#">Home</a>
                     <a class="nav-link" href="/campgrounds">Campgrounds</a>
                     <% if(!currentUser) { %>

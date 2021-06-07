@@ -22,7 +22,6 @@ const campgroundRoutes = require('./routes/campgrounds')
 const reviewRoutes = require('./routes/reviews')
 
 const MongoDBStore = require("connect-mongo")(session);
-//mongodb://localhost:27017/yelp-camp
 const dbUrl = process.env.DB_URL || 'mongodb://localhost:27017/yelp-camp';
 mongoose.connect(dbUrl, {
     useNewUrlParser: true,
@@ -81,21 +80,25 @@ const scriptSrcUrls = [
     "https://api.tiles.mapbox.com",
     "https://api.mapbox.com",
     "https://cdn.jsdelivr.net",
-    "https://unpkg.com"
+
+    "https://kit.fontawesome.com"
 ];
 const styleSrcUrls = [
     "https://stackpath.bootstrapcdn.com",
     "https://api.mapbox.com",
     "https://api.tiles.mapbox.com",
     "https://fonts.googleapis.com",
+
     "https://cdn.jsdelivr.net"
 ]
 const connectSrcUrls = [
     "https://api.mapbox.com",
     "https://*.tiles.mapbox.com",
-    "https://events.mapbox.com",
+    "https://ka-f.fontawesome.com",
+    "https://events.mapbox.com"
 ];
 const fontSrcUrls = [
+    "https://ka-f.fontawesome.com",
     "https://fonts.gstatic.com"
 ]
 app.use(
@@ -114,6 +117,7 @@ app.use(
                 "data:",
                 "https://res.cloudinary.com/dsgvp2wmj/", //SHOULD MATCH YOUR CLOUDINARY ACCOUNT! 
                 "https://images.unsplash.com",
+                "https://cdn.dribbble.com"
             ],
             fontSrc: ["'self'", ...fontSrcUrls],
         },

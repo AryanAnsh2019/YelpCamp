@@ -1,16 +1,21 @@
 <%layout('layouts/boilerplate')%>
     <div id="clusterMap"></div>
-    <h1 class="my-5">All Campgrounds</h1>
-    <div id="campgroundWrapper">
-        
-    <% for( let campground of campgrounds.campgrounds) { %>
+    <div class="row my-5">
+        <div class="col">
+            <h1>All Campgrounds</h1>
+        </div>
+        <div class="col">
+            <input type="text" class="form-control" id="searchBar" name="search" placeholder="Search for a campground">
+        </div>
+    </div>
+    <% for( let campground of campgrounds) { %>
         <div class="card mb-3">
             <div class="row">
                 <div class="col-lg-4">
                     <% if (campground.images.length) { %>
-                        <img src="<%=campground.images[0].url%>" alt="" class="img-fluid">
+                        <img src="<%=campground.images[0].url%>" alt="" class="img-fluid" onerror="this.src='https://images.unsplash.com/photo-1521255450884-b3e8e92cd615?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'">
                         <% } else { %>
-                            <img src="https://res.cloudinary.com/dsgvp2wmj/image/upload/v1621475259/YelpCamp/rjrdqgdthhhmsixwbmgs.jpg"
+                            <img src="https://images.unsplash.com/photo-1521255450884-b3e8e92cd615?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
                                 alt="" class="img-fluid">
                             <% } %>
                 </div>
@@ -34,11 +39,10 @@
         </div>
 
         <% } %>
-    </div>
 
     <nav aria-label="Campground pagination" class="d-flex justify-content-center py-4">
             <ul class="pagination">
-                <% if (campgrounds.previous.page == null) { %>
+                <% if (previous.page == null) { %>
                     <li class="page-item disabled">
                         <a class="page-link" href="#" aria-label="Previous">
                           <span aria-hidden="true">&laquo;</span>
@@ -46,35 +50,35 @@
                       </li>
                 <% } else { %>
                     <li class="page-item">
-                        <a class="page-link" href="/campgrounds?limit=<%=campgrounds.previous.limit%>&page=<%=campgrounds.previous.page%>" aria-label="Previous">
+                        <a class="page-link" href="/campgrounds?page=<%=previous.page%>" aria-label="Previous">
                           <span aria-hidden="true">&laquo;</span>
                         </a>
                       </li>
                 <% } %>
 
 
-                <% let i = (Number(campgrounds.previous.page+1) > 5 ? Number(campgrounds.previous.page+1) - 4 : 1) %>
+                <% let i = (Number(previous.page+1) > 5 ? Number(previous.page+1) - 4 : 1) %>
                 <% if (i !== 1) { %>
                     <li class="disabled page-item"><a class="page-link">...</a></li>
                 <% } %>
-                <% for (; i <= (Number(campgrounds.previous.page+1) + 4) && i <= campgrounds.pages; i++) { %>
-                    <% if (i == campgrounds.previous.page+1) { %>
+                <% for (; i <= (Number(previous.page+1) + 4) && i <= pages; i++) { %>
+                    <% if (i == previous.page+1) { %>
                         <li class="active page-item"><a class="page-link"><%= i %></a></li>
                     <% } else { %>
-                        <li class="page-item"><a href="/campgrounds?limit=<%=campgrounds.previous.limit%>&page=<%= i %>" class="page-link"><%= i %></a></li>
+                        <li class="page-item"><a href="/campgrounds?page=<%= i %>" class="page-link"><%= i %></a></li>
                     <% } %>
-                    <% if (i == Number(campgrounds.previous.page+1) + 4 && i < campgrounds.pages) { %>
+                    <% if (i == Number(previous.page+1) + 4 && i < pages) { %>
                         <li class="disabled page-item"><a class="page-link">...</a></li>
                     <% } %>
                 <% } %>
 
-                <% if (campgrounds.next.page >= campgrounds.pages) { %>
+                <% if (next.page >= pages) { %>
                     <a class="page-link disabled" href="#" aria-label="Next">
                         <span aria-hidden="true">&raquo;</span>
                     </a>
                 <% } else { %>
                     <li class="page-item">
-                        <a href="/campgrounds?limit=<%=campgrounds.previous.limit%>&page=<%= campgrounds.next.page %>" class="page-link" aria-label="next">
+                        <a href="/campgrounds?page=<%= next.page %>" class="page-link" aria-label="next">
                             <span aria-hidden="true">&raquo;</span>
                         </a>
                     </li>
@@ -84,8 +88,24 @@
       </nav>
 
         <script>
+
+
             const mapToken = '<%-process.env.MAPBOX_TOKEN%>';
             const campgrounds = {features:<%-JSON.stringify(allCampgrounds)%>}
+
+
+            const searchBar = document.querySelector('#searchBar');
+            searchBar.addEventListener('keyup',()=>{
+                if ('URLSearchParams' in window) {
+                    let searchParams = new URLSearchParams(window.location.search);
+                    searchParams.set("search", searchBar.value);
+                    let newRelativePathQuery = window.location.pathname + '?' + searchParams.toString();
+                    history.pushState(null, '', newRelativePathQuery);
+                }
+
+            })
+
+
           </script>
             <script src="/js/clusterMap.js"></script>
          

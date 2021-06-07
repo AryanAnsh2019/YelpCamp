@@ -1,0 +1,66 @@
+<%layout('layouts/boilerplate')%>
+
+    <div class="mb-5 row d-flex align-items-center">
+        <div class="col-3">
+            <img src="<%= user.avatar.url %>" alt="user profile image" class="img-thumbnail rounded-pill">
+        </div>
+        <div class="col-9">
+        <h1>
+            <%= user.firstName + " " + user.lastName%>
+           
+        </h1>
+        <h3 class="text-muted mb-4">@<%= user.username %> </h3>
+        <p class="lead">
+            <%= user.bio %>
+        </p>
+        </div>
+    </div>
+    <div class="py-5">
+        <h2 class="mb-3">Campgrounds by <%= user.firstName + " " + user.lastName%>
+        </h2>
+        <% if (campgrounds.length>0) { %>
+        <div class="row" id="campgroundHolder">
+            <% for(let campground of campgrounds) {%>
+                <div class="col-xl-3 col-md-4 col-sm-6 mb-3">
+                    <div class="card" style="width:17rem">
+                        <div id="campgroundCarousel" class="carousel slide" data-bs-ride="carousel">
+                            <div class="carousel-inner">
+                                <%campground.images.forEach((img, i)=>{ %>
+                                    <div class="carousel-item <%= i===0?'active':'' %>">
+                                        <img src="<%= img.url %> " class="d-block w-100 img-card-top" alt=""
+                                            style="height: 200px; object-fit:cover" onerror="this.src='https://images.unsplash.com/photo-1521255450884-b3e8e92cd615?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'">
+                                    </div>
+                                    <% }) %>
+                            </div>
+                            <% if(campground.images.length>1){ %>
+                                <button class="carousel-control-prev" type="button" data-bs-target="#campgroundCarousel"
+                                    data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Previous</span>
+                                </button>
+                                <button class="carousel-control-next" type="button" data-bs-target="#campgroundCarousel"
+                                    data-bs-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Next</span>
+                                </button>
+                                <% } %>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <%= campground.title %>
+                            </h5>
+                            <p class="card-text text-muted">
+                                <%= campground.location %>
+                            </p>
+                            <a class="btn btn-primary" href="/campgrounds/<%= campground._id %>">View <%=
+                                    campground.title %> </a>
+                        </div>
+                    </div>
+                </div>
+                <% } %>
+                <% } else {%>
+                    <p><%= user.firstName + " " + user.lastName%> is yet to create a campground.</p>
+                <% } %>
+        </div>
+    </div>
+    </div>
