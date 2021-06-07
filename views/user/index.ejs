@@ -3,7 +3,7 @@
 
 <div class="row justify-content-center mb-5">
 <% for(let user of users) { %>
-    <div class="card col-3 col-sm-3 mx-2 px-0">
+    <div class="card col-5 col-md-3 mx-2 px-0">
         <img src="<%= user.avatar.url %>" alt="User avatar" class="img-card-top img-fluid">
         <div class="card-body d-flex flex-column justify-content-center align-items-center">
             <h5 class="card-title"><%= user.firstName + " " + user.lastName%></h5>
