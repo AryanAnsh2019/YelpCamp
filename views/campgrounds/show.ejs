@@ -99,13 +99,15 @@
           <% for( let review of campground.reviews) { %>
             <div class="card mb-3">
               <div class="card-body">
-                <h5 class="card-title"> By <b class="text-primary">
+                <div class="d-flex justify-content-between mb-3">
+                <h5 class="card-title"> By <a href="/users/<%=review.author.id%>" class="text-primary">
                     <%= review.author.username %>
-                  </b> </h5>
+                </a> </h5>
                 <p class="starability-result" data-rating="<%= review.rating %>">
                   Rated: <%= review.rating %> stars
                 </p>
-                <p class="card-text">Review :
+                </div>
+                <p class="card-text"><b>Review</b> :
                   <%= review.body%>
                 </p>
                 <% if (currentUser&&review.author.equals(currentUser._id)) { %>
