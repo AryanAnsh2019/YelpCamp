@@ -42,6 +42,8 @@ app.engine('ejs', ejsMate)
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
+
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'))
 app.use(mongoSanitize())
@@ -80,7 +82,8 @@ const scriptSrcUrls = [
     "https://api.tiles.mapbox.com",
     "https://api.mapbox.com",
     "https://cdn.jsdelivr.net",
-
+    "https://js.stripe.com/v3/",
+    "https://stackpath.bootstrapcdn.com",
     "https://kit.fontawesome.com"
 ];
 const styleSrcUrls = [
@@ -88,7 +91,6 @@ const styleSrcUrls = [
     "https://api.mapbox.com",
     "https://api.tiles.mapbox.com",
     "https://fonts.googleapis.com",
-
     "https://cdn.jsdelivr.net"
 ]
 const connectSrcUrls = [
@@ -110,6 +112,7 @@ app.use(
             styleSrc: ["'self'", "'unsafe-inline'", ...styleSrcUrls],
             workerSrc: ["'self'", "blob:"],
             childSrc: ["blob:"],
+            frameSrc: ["https://js.stripe.com"],
             objectSrc: [],
             imgSrc: [
                 "'self'",
@@ -132,8 +135,16 @@ passport.use(new localStartegy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-app.use((req, res, next) => {
+app.use(async (req, res, next) => {
     res.locals.currentUser = req.user;
+    if(req.user) {
+        try {
+          let user = await User.findById(req.user._id).populate('notifications', null, { isRead: false }).exec();
+          res.locals.notifications = user.notifications.reverse();
+        } catch(err) {
+          console.log(err.message);
+        }
+       }
     res.locals.success = req.flash('success');
     res.locals.error = req.flash('error');
     next();

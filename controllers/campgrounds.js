@@ -1,4 +1,6 @@
 const Campground = require('../models/campground');
+const User = require('../models/user');
+const Notification = require('../models/notifications');
 const { cloudinary } = require('../cloudinary')
 const mapBoxToken = process.env.MAPBOX_TOKEN;
 const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
@@ -10,6 +12,7 @@ function escapeRegex(text) {
 };
 
 module.exports.index = async (req, res) => {
+    if (req.query.paid) res.locals.success = 'Payment succeeded, welocme to YelpCamp';
     const campgrounds = res.paginatedResults;
     const allCampgrounds = await Campground.find({});
     if (campgrounds.campgrounds.length === 0) {
@@ -36,6 +39,17 @@ module.exports.createCampground = async (req, res, next) => {
     campground.geometry = geoData.body.features[0].geometry;
     campground.images = req.files.map(f => ({ url: f.path, filename: f.filename }));
     campground.author = req.user._id;
+
+    const user = await User.findById(req.user._id).populate('followers').exec();
+    let newNotification = {
+        username: req.user.username,
+        campgroundId: campground.id
+    }
+    for (const follower of user.followers) {
+        let notification = await Notification.create(newNotification);
+        follower.notifications.push(notification);
+        follower.save();
+    }
 
     await campground.save();
     req.flash('success', 'Successfully made a new campground!');

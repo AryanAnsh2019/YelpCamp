@@ -10,6 +10,9 @@ module.exports.isLoggedIn = (req, res, next) => {
         req.flash('error', 'You must be signed in first');
         return res.redirect('/login');
     }
+    if(req.xhr){
+       return res.send({error: 'Login required'})
+    }
     next();
 }
 
@@ -105,4 +108,10 @@ module.exports.paginateResults = model => {
         res.paginatedResults = campgrounds;
         next();
     }
+}
+
+module.exports.isPaid = (req,res,next)=>{
+    if(req.user.isPaid) return next();
+    req.flash('error', 'Please complete registration first');
+    res.redirect('/checkout')
 }

@@ -1,0 +1,30 @@
+<%layout('layouts/boilerplate')%>
+<link rel="stylesheet" href="/css/stripe.css">
+    <div class="container d-flex justify-content-center align-items-center mb-5">
+        <div class="row">
+            <div class="col-md-6 offset-md-3 col-xl-4 offset-xl-4">
+                <div class="card shadow">
+                    <img src="https://images.unsplash.com/photo-1571863533956-01c88e79957e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1267&q=80"
+                        alt="" class="card-img-top" />
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">Registration Payment</h5>
+                        <form id="payment-form" data-secret="{{ client_secret }}">
+                            <div id="card-element" class="mb-2 border p-3 rounded shadow-sm">
+                                <!-- Elements will create input elements here -->
+                            </div>
+
+                            <!-- We'll put the error messages in this element -->
+                            <div id="card-errors" role="alert" class="mb-4"></div>
+                            <button id="submit" class="btn btn-success d-block w-100">
+                                <div class="spinner hidden" id="spinner"></div>
+                                <span id="button-text">Submit Payment</span>
+                              </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </form>
+
+    <script src="/js/checkout.js"></script>

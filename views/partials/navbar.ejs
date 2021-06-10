@@ -29,6 +29,27 @@
                         <a href="/register" class="nav-link">Sign Up</a>
                     </li>
                 <% } else{%>
+                    <li class="dropdown nav-item">
+                        <a class="nav-link dropdown-toggle " href="#" id="notificationsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span>Notifications</span> <span class="badge bg-secondary ms-1"><%= notifications.length %></span>
+                          </a>
+                        <ul class="dropdown-menu" aria-labelledby="notificationsDropdown">
+                          <li>
+                              <a href="/notifications" class="dropdown-item">View past notifications</a>
+                          </li>
+                          <% if (notifications.length>0) { %>
+                          <hr class="dropdown-divider">
+                          <% } %>
+                          <% notifications.forEach(function(notification) { %>                          
+                              <li>
+                                  <a href="/notifications/<%= notification.id %>" class="dropdown-item">
+                                      <%= notification.username %> created a new campground
+                                  </a>
+                              </li>
+                          <% }); %>
+                        </ul>
+                      </li>
+                    <li class="nav-item mx-3"><a href="/users/<%=currentUser._id%>" class="nav-link">Signed In As <u><%= currentUser.username %></u></a></li>
                     <li class="nav-item">
                         <a href="/logout" class="nav-link">Logout</a>
                     </li>

@@ -1,10 +1,10 @@
 <%layout('layouts/boilerplate')%>
 
     <div class="mb-5 row d-flex align-items-center">
-        <div class="col-3">
+        <div class="col-2">
             <img src="<%= user.avatar.url %>" alt="user profile image" class="img-thumbnail rounded-pill">
         </div>
-        <div class="col-9">
+        <div class="col-6 ms-2">
         <h1>
             <%= user.firstName + " " + user.lastName%>
            
@@ -13,6 +13,40 @@
         <p class="lead">
             <%= user.bio %>
         </p>
+        <% if (currentUser) { %>
+         
+        
+        <% for(let follower of user.followers){ %>
+        <% if(!currentUser._id.equals(user._id)&&!follower._id.equals(currentUser._id)) { %>
+            <form action="/follow/<%=user._id%>">
+                <button class="btn btn-primary">Follow</button>
+            </form>
+        <% } %>
+       
+            <% if (currentUser._id.equals(follower._id)) { %>
+            <form action="/follow/<%=user._id%>">
+                <button class="btn btn-primary disabled">Already Following</button>
+            </form>
+            <% } %>
+        <% } %>
+        <% if (user.followers.length===0 && !currentUser._id.equals(user._id)) { %>
+            <form action="/follow/<%=user._id%>">
+                <button class="btn btn-primary">Follow</button>
+            </form>
+        <% } %>
+        <% } %>
+        </div>
+        <div class="col-3 ms-5 align-self-start">
+            
+            <h4 class="text-muted mb-4">@<%= user.username%>'s followers</h4>
+            <% if (user.followers.length===0) { %>
+                <p class="lead">No followers till now</p>
+            <% } %>
+            <div class="list-group">
+                <% for(let follower of user.followers) { %> 
+                <a href="/users/<%= follower._id %> " class="list-group-item list-group-item-action"><%= follower.username %> </a>
+                <% } %> 
+              </div>
         </div>
     </div>
     <div class="py-5">

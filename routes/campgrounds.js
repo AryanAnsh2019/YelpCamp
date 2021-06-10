@@ -6,7 +6,7 @@ const { campgroundSchema } = require('../schema.js');
 const multer = require('multer')
 const { storage } = require('../cloudinary');
 const upload = multer({ storage })
-const { isLoggedIn, isAuthor, validateCampground, paginateResults } = require('../middleware')
+const { isLoggedIn, isAuthor, validateCampground, paginateResults, isPaid } = require('../middleware')
 
 const ExpressError = require('../utils/ExpressError');
 const Campground = require('../models/campground');

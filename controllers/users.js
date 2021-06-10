@@ -1,33 +1,10 @@
 const User = require('../models/user');
+const Notification = require('../models/notifications');
 const Campground = require('../models/campground');
 const async = require('async');
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
-const campground = require('../models/campground');
-const moment = require('moment');
 
-
-
-const formatDate = date => {
-    // console.log('hhh')
-    let formattedDate = String(new Date(date).getMonth()) + '-' + String(new Date(date).getDate()) + '-' + String(new Date(date).getFullYear());
-    let rightNow = String(new Date(Date.now()).getMonth()) + '-' + String(new Date(Date.now()).getDate()) + '-' + String(new Date(Date.now()).getFullYear());
-    // const diffTime = Math.abs(rightNow - formattedDate);
-    // const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    // console.log(rightNow - formattedDate);
-    // console.log(diffTime + " milliseconds");
-    // console.log(diffDays + " days");
-    // formattedDate = moment(new Date(formattedDate)).format('MMMM Do YYYY, h:mm');
-    // rightNow = moment(new Date(rightNow)).format('MMMM Do YYYY, h:mm');
-    // const difference = moment().diff(rightNow, formattedDate);
-    // console.log(moment(difference).format('MMMM Do YYYY, h:mm'))
-    var a = moment('25/12/2019 03:22', "DD MM YYYY hh:mm");
-    var b = moment('25/12/2019 08:35', "DD MM YYYY hh:mm");
-    var diffDays = b.diff(a, 'hours');
-    console.log(diffDays);
-    // console.log(moment(r, "MM-DD-YYYY"));
-    // console.log('nnn')
-}
 
 module.exports.index = async (req, res) => {
     const users = await User.find({});
@@ -197,7 +174,7 @@ module.exports.change = (req, res) => {
 }
 
 module.exports.profile = async (req, res) => {
-    const user = await User.findById(req.params.id);
+    const user = await User.findById(req.params.id).populate('followers');
     let campgrounds = await Campground.find({ author: req.params.id })
     if (!user) {
         req.flash('error', 'Sorry! No profile found!');
@@ -214,3 +191,34 @@ module.exports.deleteUser = async (req, res) => {
     req.flash('success', 'Successfully deleted user!');
     res.redirect('/users');
 }
+
+module.exports.followUser = async (req, res) => {
+    let user = await User.findById(req.params.id);
+    user.followers.push(req.user._id);
+    user.save();
+    req.flash('success', 'Successfully followed ' + user.username + '!');
+    res.redirect('/users/' + req.params.id);
+};
+
+// view all notifications
+module.exports.viewNotifications = async (req, res) => {
+    try {
+        let user = await User.findById(req.user._id).populate({
+            path: 'notifications',
+            options: { sort: { "_id": -1 } }
+        }).exec();
+        let allNotifications = user.notifications;
+        res.render('notifications/index', { allNotifications });
+    } catch (err) {
+        req.flash('error', err.message);
+        res.redirect('back');
+    }
+};
+
+// handle notification
+module.exports.notifications =  async function (req, res) {
+        let notification = await Notification.findById(req.params.id);
+        notification.isRead = true;
+        notification.save();
+        res.redirect(`/campgrounds/${notification.campgroundId}`);
+};

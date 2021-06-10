@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const notificationSchema = require('./notifications')
 const passportLocalMongoose = require('passport-local-mongoose');
 
 
@@ -20,11 +21,27 @@ const UserSchema = new Schema({
     bio: String,
     lastActive: {
         type: Date,
-        default:Date.now()
+        default: Date.now()
     },
     currentlyActive: {
-        type:Boolean,
-        default:false
+        type: Boolean,
+        default: false
+    },
+    notifications: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Notification'
+        }
+    ],
+    followers: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'User'
+        }
+    ],
+    isPaid: {
+        type: Boolean,
+        default: false
     }
 })
 
