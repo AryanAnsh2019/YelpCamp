@@ -5,7 +5,12 @@
             <h1>All Campgrounds</h1>
         </div>
         <div class="col">
-            <input type="text" class="form-control" id="searchBar" name="search" placeholder="Search for a campground">
+            <form action="/campgrounds" class="w-100">
+                <div class="input-group">
+                <input type="text" class="form-control" id="searchBar" name="search" placeholder="Search for a campground by its name">
+                <button class="input-group-text">Search</button>
+                </div>
+            </form>
         </div>
     </div>
     <% for( let campground of campgrounds) { %>
@@ -94,16 +99,16 @@
             const campgrounds = {features:<%-JSON.stringify(allCampgrounds)%>}
 
 
-            const searchBar = document.querySelector('#searchBar');
-            searchBar.addEventListener('keyup',()=>{
-                if ('URLSearchParams' in window) {
-                    let searchParams = new URLSearchParams(window.location.search);
-                    searchParams.set("search", searchBar.value);
-                    let newRelativePathQuery = window.location.pathname + '?' + searchParams.toString();
-                    history.pushState(null, '', newRelativePathQuery);
-                }
+            // const searchBar = document.querySelector('#searchBar');
+            // searchBar.addEventListener('keyup',()=>{
+            //     if ('URLSearchParams' in window) {
+            //         let searchParams = new URLSearchParams(window.location.search);
+            //         searchParams.set("search", searchBar.value);
+            //         let newRelativePathQuery = window.location.pathname + '?' + searchParams.toString();
+            //         history.pushState(null, '', newRelativePathQuery);
+            //     }
 
-            })
+            // })
 
 
           </script>

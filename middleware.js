@@ -10,8 +10,8 @@ module.exports.isLoggedIn = (req, res, next) => {
         req.flash('error', 'You must be signed in first');
         return res.redirect('/login');
     }
-    if(req.xhr){
-       return res.send({error: 'Login required'})
+    if (req.xhr) {
+        return res.send({ error: 'Login required' })
     }
     next();
 }
@@ -58,7 +58,7 @@ module.exports.validateReview = (req, res, next) => {
     }
 }
 
-module.exports.isProfileAuthor = async (req,res,next) =>{
+module.exports.isProfileAuthor = async (req, res, next) => {
     const { id } = req.params;
     const user = await User.findById(id);
     if (!user._id.equals(req.user._id)) {
@@ -68,9 +68,22 @@ module.exports.isProfileAuthor = async (req,res,next) =>{
     next();
 }
 
+function escapeRegex(text) {
+    return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+};
+
 module.exports.paginateResults = model => {
     return async (req, res, next) => {
-        const allCampgrounds = await Campground.find({});
+        let allCampgrounds = [];
+        // console.log(req.query.search);
+        if (req.query.search) {
+            const regex = new RegExp(escapeRegex(req.query.search), 'gi');
+            allCampgrounds = await Campground.find({ title: regex });
+            
+        } else {
+            allCampgrounds = await Campground.find({});
+        }
+        // const allCampgrounds = await Campground.find({});
 
         const page = parseInt(req.query.page) || 1;
         const limit = 20;
@@ -103,15 +116,15 @@ module.exports.paginateResults = model => {
                 limit: limit
             }
         }
-        campgrounds.pages = ~~(allCampgrounds.length/limit) ;
+        campgrounds.pages = ~~(allCampgrounds.length / limit);
 
         res.paginatedResults = campgrounds;
         next();
     }
 }
 
-module.exports.isPaid = (req,res,next)=>{
-    if(req.user.isPaid) return next();
+module.exports.isPaid = (req, res, next) => {
+    if (req.user.isPaid) return next();
     req.flash('error', 'Please complete registration first');
     res.redirect('/checkout')
 }
